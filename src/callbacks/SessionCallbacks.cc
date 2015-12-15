@@ -20,11 +20,11 @@ static sp_playlistcontainer_callbacks rootPlaylistContainerCallbacks;
 static std::unique_ptr<uv_timer_t> processEventsTimer;
 static std::unique_ptr<uv_async_t> notifyHandle;
 
-std::unique_ptr<NanCallback> SessionCallbacks::loginCallback;
-std::unique_ptr<NanCallback> SessionCallbacks::logoutCallback;
-std::unique_ptr<NanCallback> SessionCallbacks::metadataUpdatedCallback;
-std::unique_ptr<NanCallback> SessionCallbacks::endOfTrackCallback;
-std::unique_ptr<NanCallback> SessionCallbacks::playTokenLostCallback;
+std::unique_ptr<Nan::Callback> SessionCallbacks::loginCallback;
+std::unique_ptr<Nan::Callback> SessionCallbacks::logoutCallback;
+std::unique_ptr<Nan::Callback> SessionCallbacks::metadataUpdatedCallback;
+std::unique_ptr<Nan::Callback> SessionCallbacks::endOfTrackCallback;
+std::unique_ptr<Nan::Callback> SessionCallbacks::playTokenLostCallback;
 
 void SessionCallbacks::init() {
   processEventsTimer = std::unique_ptr<uv_timer_t>(new uv_timer_t());
@@ -86,7 +86,7 @@ void SessionCallbacks::metadata_updated(sp_session* session) {
 void SessionCallbacks::loggedIn(sp_session* session, sp_error error) {
   if(SP_ERROR_OK != error) {
     unsigned int argc = 1;
-    v8::Handle<v8::Value> argv[1] = { NanError(sp_error_message(error)) };
+    v8::Handle<v8::Value> argv[1] = { Nan::Error(sp_error_message(error)) };
     loginCallback->Call( argc, argv );
     return;
   }

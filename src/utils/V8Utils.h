@@ -6,7 +6,7 @@
 
 class V8Utils {
 public:
-  static std::unique_ptr<NanCallback> getFunctionFromObject(v8::Handle<v8::Object> callbacks, v8::Handle<v8::String> key);
+  static std::unique_ptr<Nan::Callback> getFunctionFromObject(v8::Handle<v8::Object> callbacks, v8::Handle<v8::String> key);
 };
 
 #endif

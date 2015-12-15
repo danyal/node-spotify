@@ -17,11 +17,11 @@ public:
   static void start_playback(sp_session* session);
   static void stop_playback(sp_session* session);
   static void rootPlaylistContainerLoaded(sp_playlistcontainer* sp, void* userdata);
-  static std::unique_ptr<NanCallback> loginCallback;
-  static std::unique_ptr<NanCallback> logoutCallback;
-  static std::unique_ptr<NanCallback> metadataUpdatedCallback;
-  static std::unique_ptr<NanCallback> endOfTrackCallback;
-  static std::unique_ptr<NanCallback> playTokenLostCallback;
+  static std::unique_ptr<Nan::Callback> loginCallback;
+  static std::unique_ptr<Nan::Callback> logoutCallback;
+  static std::unique_ptr<Nan::Callback> metadataUpdatedCallback;
+  static std::unique_ptr<Nan::Callback> endOfTrackCallback;
+  static std::unique_ptr<Nan::Callback> playTokenLostCallback;
 };
 
 #endif

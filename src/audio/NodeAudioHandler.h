@@ -15,7 +15,7 @@
  */
 class NodeAudioHandler : public AudioHandler {
 public:
-  NodeAudioHandler(std::unique_ptr<NanCallback> musicDeliveryCallback);
+  NodeAudioHandler(std::unique_ptr<Nan::Callback> musicDeliveryCallback);
   ~NodeAudioHandler();
   void setStopped(bool stopped);
   static NAN_METHOD(setNeedMoreData);
@@ -23,7 +23,7 @@ protected:
   void afterMusicDelivery(const sp_audioformat* format);
   bool dataNeeded();
 private:
-  std::unique_ptr<NanCallback> musicDeliveryCallback;
+  std::unique_ptr<Nan::Callback> musicDeliveryCallback;
   uv_timer_t musicTimer;
   bool needMoreData;
   bool stopped;

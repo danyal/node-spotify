@@ -13,27 +13,27 @@ NodePlaylistContainer::~NodePlaylistContainer() {
 }
 
 NAN_GETTER(NodePlaylistContainer::getOwner) {
-  NanScope();
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
+  Nan::HandleScope scope;
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
   NodeUser* nodeUser = new NodeUser(nodePlaylistContainer->playlistContainer->owner());
-  NanReturnValue(nodeUser->createInstance());
+  info.GetReturnValue().Set(nodeUser->createInstance());
 }
 
 NAN_GETTER(NodePlaylistContainer::getNumPlaylists) {
-  NanScope();
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
-  NanReturnValue(NanNew<Integer>(nodePlaylistContainer->playlistContainer->numPlaylists()));
+  Nan::HandleScope scope;
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
+  info.GetReturnValue().Set(Nan::New<Integer>(nodePlaylistContainer->playlistContainer->numPlaylists()));
 }
 
 NAN_METHOD(NodePlaylistContainer::getPlaylist) {
-  NanScope();
-  if(args.Length() < 1 || !args[0]->IsNumber()) {
-    return NanThrowError("getPlaylist needs an interger as its first argument.");
+  Nan::HandleScope scope;
+  if(info.Length() < 1 || !info[0]->IsNumber()) {
+    return Nan::ThrowError("getPlaylist needs an interger as its first argument.");
   }
-  int index = args[0]->ToNumber()->IntegerValue();
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
+  int index = info[0]->ToNumber()->IntegerValue();
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
   if(index < 0 || index >= nodePlaylistContainer->playlistContainer->numPlaylists()) {
-    return NanThrowError("Index out of range.");
+    return Nan::ThrowError("Index out of range.");
   }
   std::shared_ptr<PlaylistBase> playlist = nodePlaylistContainer->playlistContainer->getPlaylist(index);
 
@@ -46,112 +46,112 @@ NAN_METHOD(NodePlaylistContainer::getPlaylist) {
     outNodePlaylist = nodePlaylistFolder->createInstance();
   }
 
-  NanReturnValue(outNodePlaylist);
+  info.GetReturnValue().Set(outNodePlaylist);
 }
 
 NAN_METHOD(NodePlaylistContainer::addPlaylist) {
-  NanScope();
-  if(args.Length() < 1 || !args[0]->IsString()) {
-    return NanThrowError("addPlaylist needs a string as its argument");
+  Nan::HandleScope scope;
+  if(info.Length() < 1 || !info[0]->IsString()) {
+    return Nan::ThrowError("addPlaylist needs a string as its argument");
   }
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
-  String::Utf8Value playlistName(args[0]->ToString());
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
+  String::Utf8Value playlistName(info[0]->ToString());
   try {
     nodePlaylistContainer->playlistContainer->addPlaylist(std::string(*playlistName));
   } catch(const PlaylistCreationException& e) {
-    return NanThrowError("Playlist creation failed");
+    return Nan::ThrowError("Playlist creation failed");
   }
-  NanReturnUndefined();
+  return;
 }
 
 NAN_METHOD(NodePlaylistContainer::addFolder) {
-  NanScope();
-  if(args.Length() < 2 || !args[0]->IsNumber() || !args[1]->IsString()) {
-    return NanThrowError("addFolder needs a number and a string as arguments.");
+  Nan::HandleScope scope;
+  if(info.Length() < 2 || !info[0]->IsNumber() || !info[1]->IsString()) {
+    return Nan::ThrowError("addFolder needs a number and a string as arguments.");
   }
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
-  int index = args[0]->ToNumber()->IntegerValue();
-  String::Utf8Value folderName(args[1]->ToString());
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
+  int index = info[0]->ToNumber()->IntegerValue();
+  String::Utf8Value folderName(info[1]->ToString());
   try {
     nodePlaylistContainer->playlistContainer->addFolder(index, std::string(*folderName));
   } catch(const PlaylistCreationException& e) {
-    return NanThrowError("Folder creation failed");
+    return Nan::ThrowError("Folder creation failed");
   }
-  NanReturnUndefined();
+  return;
 }
 
 NAN_METHOD(NodePlaylistContainer::deletePlaylist) {
-  NanScope();
-  if(args.Length() < 1 || !args[0]->IsNumber()) {
-    return NanThrowError("deletePlaylist needs an integer as its first argument.");
+  Nan::HandleScope scope;
+  if(info.Length() < 1 || !info[0]->IsNumber()) {
+    return Nan::ThrowError("deletePlaylist needs an integer as its first argument.");
   }
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
-  int position = args[0]->ToNumber()->IntegerValue();
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
+  int position = info[0]->ToNumber()->IntegerValue();
   nodePlaylistContainer->playlistContainer->removePlaylist(position);
-  NanReturnUndefined();
+  return;
 }
 
 NAN_METHOD(NodePlaylistContainer::movePlaylist) {
-  NanScope();
-  if(args.Length() < 2 || !args[0]->IsNumber() || !args[1]->IsNumber()) {
-    return NanThrowError("Move playlist needs 2 numbers as its first arguments.");
+  Nan::HandleScope scope;
+  if(info.Length() < 2 || !info[0]->IsNumber() || !info[1]->IsNumber()) {
+    return Nan::ThrowError("Move playlist needs 2 numbers as its first arguments.");
   }
-  int index = args[0]->ToNumber()->IntegerValue();
-  int newPosition = args[1]->ToNumber()->IntegerValue();
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
+  int index = info[0]->ToNumber()->IntegerValue();
+  int newPosition = info[1]->ToNumber()->IntegerValue();
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
   try {
     nodePlaylistContainer->playlistContainer->movePlaylist(index, newPosition);
   } catch(const PlaylistNotMoveableException& e) {
-    return NanThrowError(e.message.c_str());
+    return Nan::ThrowError(e.message.c_str());
   }
-  NanReturnUndefined();
+  return;
 }
 
 NAN_GETTER(NodePlaylistContainer::isLoaded) {
-  NanScope();
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
-  NanReturnValue(NanNew<Boolean>(nodePlaylistContainer->playlistContainer->isLoaded()));
+  Nan::HandleScope scope;
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
+  info.GetReturnValue().Set(Nan::New<Boolean>(nodePlaylistContainer->playlistContainer->isLoaded()));
 }
 
 NAN_METHOD(NodePlaylistContainer::on) {
-  NanScope();
-  if(args.Length() < 1 || !args[0]->IsObject()) {
-    return NanThrowError("on needs an object as its first argument.");
+  Nan::HandleScope scope;
+  if(info.Length() < 1 || !info[0]->IsObject()) {
+    return Nan::ThrowError("on needs an object as its first argument.");
   }
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
-  Handle<Object> callbacks = args[0]->ToObject();
-  Handle<String> playlistAddedKey = NanNew<String>("playlistAdded");
-  Handle<String> playlistMovedKey = NanNew<String>("playlistMoved");
-  Handle<String> playlistRemovedKey = NanNew<String>("playlistRemoved");
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
+  Handle<Object> callbacks = info[0]->ToObject();
+  Handle<String> playlistAddedKey = Nan::New<String>("playlistAdded").ToLocalChecked();
+  Handle<String> playlistMovedKey = Nan::New<String>("playlistMoved").ToLocalChecked();
+  Handle<String> playlistRemovedKey = Nan::New<String>("playlistRemoved").ToLocalChecked();
   nodePlaylistContainer->playlistContainerCallbacksHolder.playlistAddedCallback = V8Utils::getFunctionFromObject(callbacks, playlistAddedKey);
   nodePlaylistContainer->playlistContainerCallbacksHolder.playlistMovedCallback = V8Utils::getFunctionFromObject(callbacks, playlistMovedKey);
   nodePlaylistContainer->playlistContainerCallbacksHolder.playlistRemovedCallback = V8Utils::getFunctionFromObject(callbacks, playlistRemovedKey);
   nodePlaylistContainer->playlistContainerCallbacksHolder.setCallbacks();
-  NanReturnUndefined();
+  return;
 }
 
 NAN_METHOD(NodePlaylistContainer::off) {
-  NanScope();
-  NodePlaylistContainer* nodePlaylistContainer = node::ObjectWrap::Unwrap<NodePlaylistContainer>(args.This());
+  Nan::HandleScope scope;
+  NodePlaylistContainer* nodePlaylistContainer = Nan::ObjectWrap::Unwrap<NodePlaylistContainer>(info.This());
   nodePlaylistContainer->playlistContainerCallbacksHolder.unsetCallbacks();
-  NanReturnUndefined();
+  return;
 }
 
 void NodePlaylistContainer::init() {
-  NanScope();
-  Local<FunctionTemplate> constructorTemplate = NanNew<FunctionTemplate>();
-  constructorTemplate->SetClassName(NanNew<String>("PlaylistContainer"));
+  Nan::HandleScope scope;
+  Local<FunctionTemplate> constructorTemplate = Nan::New<FunctionTemplate>();
+  constructorTemplate->SetClassName(Nan::New<String>("PlaylistContainer").ToLocalChecked());
   constructorTemplate->InstanceTemplate()->SetInternalFieldCount(1);
-  NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "on", on);
-  NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "off", off);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("owner"), getOwner);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("numPlaylists"), getNumPlaylists);
-  constructorTemplate->InstanceTemplate()->SetAccessor(NanNew<String>("isLoaded"), isLoaded);
-  NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "getPlaylist", getPlaylist);
-  NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "addPlaylist", addPlaylist);
-  NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "addFolder", addFolder);
-  NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "deletePlaylist", deletePlaylist);
-  NODE_SET_PROTOTYPE_METHOD(constructorTemplate, "movePlaylist", movePlaylist);
+  Nan::SetPrototypeMethod(constructorTemplate, "on", on);
+  Nan::SetPrototypeMethod(constructorTemplate, "off", off);
+  Nan::SetAccessor(constructorTemplate->InstanceTemplate(), Nan::New<String>("owner").ToLocalChecked(), getOwner);
+  Nan::SetAccessor(constructorTemplate->InstanceTemplate(), Nan::New<String>("numPlaylists").ToLocalChecked(), getNumPlaylists);
+  Nan::SetAccessor(constructorTemplate->InstanceTemplate(), Nan::New<String>("isLoaded").ToLocalChecked(), isLoaded);
+  Nan::SetPrototypeMethod(constructorTemplate, "getPlaylist", getPlaylist);
+  Nan::SetPrototypeMethod(constructorTemplate, "addPlaylist", addPlaylist);
+  Nan::SetPrototypeMethod(constructorTemplate, "addFolder", addFolder);
+  Nan::SetPrototypeMethod(constructorTemplate, "deletePlaylist", deletePlaylist);
+  Nan::SetPrototypeMethod(constructorTemplate, "movePlaylist", movePlaylist);
 
-  NanAssignPersistent(NodePlaylistContainer::constructorTemplate, constructorTemplate);
+  NodePlaylistContainer::constructorTemplate.Reset(constructorTemplate);
 }

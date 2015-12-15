@@ -12,12 +12,12 @@ using namespace v8;
 
 class PlaylistCallbacksHolder {
 private:
-  node::ObjectWrap* userdata;
+  Nan::ObjectWrap* userdata;
   sp_playlist* playlist;
   sp_playlist_callbacks* playlistCallbacks;
-  void call(std::unique_ptr<NanCallback>& callback, std::initializer_list<Handle<Value>> args);
+  void call(std::unique_ptr<Nan::Callback>& callback, std::initializer_list<Handle<Value>> info);
 public:
-  PlaylistCallbacksHolder(node::ObjectWrap* userdata, sp_playlist* playlist);
+  PlaylistCallbacksHolder(Nan::ObjectWrap* userdata, sp_playlist* playlist);
   ~PlaylistCallbacksHolder();
 
   //libspotify callback functions.
@@ -29,13 +29,13 @@ public:
   static void trackSeenChanged(sp_playlist* spPlaylist, int position, bool seen, void* userdata);
   static void trackMessageChanged(sp_playlist* spPlaylist, int position, const char* message, void* userdata);
   
-  std::unique_ptr<NanCallback> playlistRenamedCallback;
-  std::unique_ptr<NanCallback> tracksAddedCallback;
-  std::unique_ptr<NanCallback> tracksMovedCallback;
-  std::unique_ptr<NanCallback> tracksRemovedCallback;
-  std::unique_ptr<NanCallback> trackCreatedChangedCallback;
-  std::unique_ptr<NanCallback> trackSeenChangedCallback;
-  std::unique_ptr<NanCallback> trackMessageChangedCallback;
+  std::unique_ptr<Nan::Callback> playlistRenamedCallback;
+  std::unique_ptr<Nan::Callback> tracksAddedCallback;
+  std::unique_ptr<Nan::Callback> tracksMovedCallback;
+  std::unique_ptr<Nan::Callback> tracksRemovedCallback;
+  std::unique_ptr<Nan::Callback> trackCreatedChangedCallback;
+  std::unique_ptr<Nan::Callback> trackSeenChangedCallback;
+  std::unique_ptr<Nan::Callback> trackMessageChangedCallback;
   /**
     Register the callbacks with libspotify. Will first remove old registered callbacks.
   **/
