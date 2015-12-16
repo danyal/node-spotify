@@ -52,7 +52,6 @@ NAN_METHOD(NodePlayer::play) {
     return Nan::ThrowError("No audio handler registered. Use spotify.useNodejsAudio().");
   }
 #endif
-
   return;
 }
 
@@ -79,14 +78,24 @@ NAN_METHOD(NodePlayer::on) {
     return Nan::ThrowError("on needs an object as its first argument.");
   }
   Handle<Object> callbacks = info[0]->ToObject();
+
   Handle<String> endOfTrackKey = Nan::New<String>("endOfTrack").ToLocalChecked();
   SessionCallbacks::endOfTrackCallback = V8Utils::getFunctionFromObject(callbacks, endOfTrackKey);
+
+  Handle<String> startPlaybackKey = Nan::New<String>("startPlayback").ToLocalChecked();
+  SessionCallbacks::startPlaybackCallback = V8Utils::getFunctionFromObject(callbacks, startPlaybackKey);
+
+  Handle<String> stopPlaybackKey = Nan::New<String>("stopPlayback").ToLocalChecked();
+  SessionCallbacks::stopPlaybackCallback = V8Utils::getFunctionFromObject(callbacks, stopPlaybackKey);
+
   return;
 }
 
 NAN_METHOD(NodePlayer::off) {
   Nan::HandleScope scope;
   SessionCallbacks::endOfTrackCallback = std::unique_ptr<Nan::Callback>(new Nan::Callback());
+  SessionCallbacks::startPlaybackCallback = std::unique_ptr<Nan::Callback>(new Nan::Callback());
+  SessionCallbacks::stopPlaybackCallback = std::unique_ptr<Nan::Callback>(new Nan::Callback());
   return;
 }
 
@@ -95,6 +104,7 @@ void NodePlayer::init() {
   Local<FunctionTemplate> constructorTemplate = Nan::New<FunctionTemplate>();
   constructorTemplate->SetClassName(Nan::New<String>("Player").ToLocalChecked());
   constructorTemplate->InstanceTemplate()->SetInternalFieldCount(1);
+
   Nan::SetPrototypeMethod(constructorTemplate, "on", on);
   Nan::SetPrototypeMethod(constructorTemplate, "off", off);
 
@@ -103,6 +113,7 @@ void NodePlayer::init() {
   Nan::SetPrototypeMethod(constructorTemplate, "resume", resume);
   Nan::SetPrototypeMethod(constructorTemplate, "stop", stop);
   Nan::SetPrototypeMethod(constructorTemplate, "seek", seek);
+
   Nan::SetAccessor(constructorTemplate->InstanceTemplate(), Nan::New<String>("currentSecond").ToLocalChecked(), &getCurrentSecond);
   NodePlayer::constructorTemplate.Reset(constructorTemplate);
 }

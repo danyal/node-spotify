@@ -35,12 +35,12 @@ sp_session* Spotify::createSession(SpotifyOptions options) {
   sessionCallbacks.logged_in = &SessionCallbacks::loggedIn;
   sessionCallbacks.logged_out = &SessionCallbacks::loggedOut;
   sessionCallbacks.play_token_lost = &SessionCallbacks::playTokenLost;
+  sessionCallbacks.start_playback = &SessionCallbacks::start_playback;
+  sessionCallbacks.stop_playback = &SessionCallbacks::stop_playback;
   sessionCallbacks.end_of_track = &SessionCallbacks::end_of_track;
   sessionCallbacks.metadata_updated = &SessionCallbacks::metadata_updated;
 
   sessionCallbacks.music_delivery = &AudioHandler::musicDelivery;
-  sessionCallbacks.start_playback = &SessionCallbacks::start_playback;
-  sessionCallbacks.stop_playback = &SessionCallbacks::stop_playback;
   sessionCallbacks.get_audio_buffer_stats = &AudioHandler::getAudioBufferStats;
 
   sessionConfig.api_version = SPOTIFY_API_VERSION;

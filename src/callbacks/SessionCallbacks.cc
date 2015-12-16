@@ -24,6 +24,8 @@ std::unique_ptr<Nan::Callback> SessionCallbacks::loginCallback;
 std::unique_ptr<Nan::Callback> SessionCallbacks::logoutCallback;
 std::unique_ptr<Nan::Callback> SessionCallbacks::metadataUpdatedCallback;
 std::unique_ptr<Nan::Callback> SessionCallbacks::endOfTrackCallback;
+std::unique_ptr<Nan::Callback> SessionCallbacks::startPlaybackCallback;
+std::unique_ptr<Nan::Callback> SessionCallbacks::stopPlaybackCallback;
 std::unique_ptr<Nan::Callback> SessionCallbacks::playTokenLostCallback;
 
 void SessionCallbacks::init() {
@@ -77,7 +79,7 @@ void SessionCallbacks::metadata_updated(sp_session* session) {
   if(application->player->isLoading) {
     application->player->retryPlay();
   }
-  
+
   if(metadataUpdatedCallback && !metadataUpdatedCallback->IsEmpty()) {
     metadataUpdatedCallback->Call(0, {});
   }
@@ -95,7 +97,7 @@ void SessionCallbacks::loggedIn(sp_session* session, sp_error error) {
   rootPlaylistContainerCallbacks.container_loaded = &SessionCallbacks::rootPlaylistContainerLoaded;
   sp_playlistcontainer *pc = sp_session_playlistcontainer(application->session);
   application->playlistContainer = std::make_shared<PlaylistContainer>(pc);
-  sp_playlistcontainer_add_callbacks(pc, &rootPlaylistContainerCallbacks, nullptr); 
+  sp_playlistcontainer_add_callbacks(pc, &rootPlaylistContainerCallbacks, nullptr);
 }
 
 /**
@@ -107,7 +109,7 @@ void SessionCallbacks::rootPlaylistContainerLoaded(sp_playlistcontainer* sp, voi
   }
   //Issue 35, rootPlaylistContainerLoaded can be called multiple times throughout the lifetime of a session.
   //loginCallback must only be called once.
-  sp_playlistcontainer_remove_callbacks(sp, &rootPlaylistContainerCallbacks, nullptr);    
+  sp_playlistcontainer_remove_callbacks(sp, &rootPlaylistContainerCallbacks, nullptr);
 }
 
 void SessionCallbacks::playTokenLost(sp_session *session) {
