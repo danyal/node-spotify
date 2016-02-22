@@ -1,4 +1,4 @@
-var _spotify = require('./nodespotify');
+var _spotify = require('node!./nodespotify.node');
 var metadataUpdater = require('./metadataUpdater');
 
 function addMethodsToPrototypes(sp) {

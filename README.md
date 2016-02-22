@@ -1,13 +1,3 @@
-node-spotify
-============
-*Important note*
-----------------
-Spotify has declared [1] libspotify, which this project is based on as "no longer under active development". A newer library will be released "later this year".
-
-I hope to find the time to still add some features and remove bugs from node-spotify. When the new library is out I also want to check if a transition to it is feasible without changing the API too much.
-
-[1] https://developer.spotify.com/technologies/libspotify/
-
 Overview
 --------
 node-spotify is a node.js module to use the Spotify API in an easy manner from node.js.
@@ -15,11 +5,6 @@ node-spotify is a node.js module to use the Spotify API in an easy manner from n
 The node.js module is a native module written mainly in C++.
 
 A webpage for the project is here: http://www.node-spotify.com.
-
-Notes
------
-I'm working toward version 1.0.0 which is not meant to provide everything libspotify offers. But I intend to wrap all libspotify types and provide methods
-to access them where possible. Options and convenience features my lack, though.
 
 You need a spotify premium account to build or use node-spotify. This is a requirement for using libspotify, sorry. You also need an appkey that comes with a premium account (https://developer.spotify.com/technologies/libspotify/#application-keys).
 
@@ -52,9 +37,6 @@ var spotify = require('./build/Release/spotify')( {
 
 The appkey file can be obtained from https://developer.spotify.com/technologies/libspotify/#application-keys (choose binary, not C-code).
 
-Binary distribution
--------------------
-As of version 0.4.0 downloads of the pure compiled node.js module are available at http://www.node-spotify.com. I'll try to provide OSX, Linux x86_64 (ALSA) and Linux ARMv6hf (ALSA) builds.
 
 How to debug node-spotify
 -------------------------
